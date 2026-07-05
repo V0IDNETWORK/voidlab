@@ -1,0 +1,46 @@
+<svg width="1280" height="320" viewBox="0 0 1280 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#05070c"/>
+      <stop offset="100%" stop-color="#0a0e14"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a48bff"/>
+      <stop offset="55%" stop-color="#7c5cff"/>
+      <stop offset="100%" stop-color="#29f1c3"/>
+    </linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M 42 0 L 0 0 0 42" fill="none" stroke="#7c5cff" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)"/>
+  <rect width="1280" height="320" fill="url(#grid)"/>
+  <rect x="0" y="0" width="1280" height="320" fill="none" stroke="#2a2f3a" stroke-width="2"/>
+
+  <circle cx="1120" cy="70" r="90" fill="#7c5cff" opacity="0.10"/>
+  <circle cx="1180" cy="230" r="130" fill="#29f1c3" opacity="0.06"/>
+
+  <text x="80" y="118" font-family="'Chakra Petch', sans-serif" font-size="26" fill="#8b93a7" letter-spacing="6">
+    ∆ JOIN VOID ∆ — V0IDNETWORK PRESENTS
+  </text>
+
+  <text x="78" y="192" font-family="'Chakra Petch', sans-serif" font-weight="700" font-size="88" fill="url(#title)">
+    VOIDLAB
+  </text>
+
+  <text x="80" y="232" font-family="'JetBrains Mono', monospace" font-size="20" fill="#c4c9d4">
+    OWASP Top 10:2025 · Web Penetration Testing Laboratory
+  </text>
+
+  <g font-family="'JetBrains Mono', monospace" font-size="15" fill="#5ff5da">
+    <rect x="80" y="252" width="150" height="30" rx="15" fill="#12161f" stroke="#2a2f3a"/>
+    <text x="98" y="272">Django 5</text>
+    <rect x="240" y="252" width="170" height="30" rx="15" fill="#12161f" stroke="#2a2f3a"/>
+    <text x="258" y="272">React 18 + TS</text>
+    <rect x="420" y="252" width="160" height="30" rx="15" fill="#12161f" stroke="#2a2f3a"/>
+    <text x="438" y="272">Docker Compose</text>
+    <rect x="590" y="252" width="200" height="30" rx="15" fill="#12161f" stroke="#2a2f3a"/>
+    <text x="608" y="272">Live Vulnerable Targets</text>
+  </g>
+</svg>

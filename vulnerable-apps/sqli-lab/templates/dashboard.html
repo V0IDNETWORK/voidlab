@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>VOIDLAB · sqli-lab dashboard</title>
+  <style>
+    body { background:#0a0e14; color:#e7e9ee; font-family: 'JetBrains Mono', monospace; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+    .card { background:#12161f; border:1px solid #2a2f3a; border-radius:8px; padding:32px; width:440px; }
+    h1 { color:#29f1c3; font-size:1.1rem; }
+    .flag { background:#0a0e14; border:1px dashed #29f1c3; padding:12px; border-radius:4px; color:#29f1c3; word-break:break-all; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>&gt; welcome, {{ username }}</h1>
+    {% if flag %}
+      <p>Admin session established. Flag:</p>
+      <div class="flag">{{ flag }}</div>
+    {% else %}
+      <p>You're logged in, but this account has no admin privileges. Look for a way in as <b>admin</b>.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

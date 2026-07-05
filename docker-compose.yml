@@ -1,0 +1,147 @@
+name: voidlab
+
+# ---------------------------------------------------------------------------
+# Network segmentation:
+#   voidlab_core    — frontend, backend, db, redis (the actual platform)
+#   voidlab_targets — attacker-box + every vulnerable-app container (the
+#                     isolated "range" the labs run inside)
+# The backend joins both: voidlab_core to serve the API, voidlab_targets
+# only to reach attacker-box for the terminal proxy. The backend is never
+# given the Docker socket and never runs subprocess against these targets
+# itself — see backend/apps/terminal/consumers.py for the full rationale.
+# ---------------------------------------------------------------------------
+networks:
+  voidlab_core:
+  voidlab_targets:
+
+volumes:
+  postgres_data:
+  static_data:
+  media_data:
+
+services:
+  # --------------------------------------------------------------------- db
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-voidlab}
+      POSTGRES_USER: ${POSTGRES_USER:-voidlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-voidlab}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [voidlab_core]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-voidlab}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ------------------------------------------------------------------ redis
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks: [voidlab_core]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --------------------------------------------------------------- backend
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+      REDIS_HOST: redis
+    volumes:
+      - static_data:/app/staticfiles
+      - media_data:/app/media
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    networks: [voidlab_core, voidlab_targets]
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/core/health/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # -------------------------------------------------------------- frontend
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+        VITE_WS_BASE_URL: ${VITE_WS_BASE_URL:-ws://localhost:8000}
+    restart: unless-stopped
+    depends_on: [backend]
+    networks: [voidlab_core]
+    ports:
+      - "5173:80"
+
+  # ---------------------------------------------------------- attacker-box
+  # Isolated command-runner behind the in-browser terminal. See
+  # attacker-box/exec_server.py for the allowlist and sandboxing notes.
+  attacker-box:
+    build: ./attacker-box
+    restart: unless-stopped
+    networks: [voidlab_targets]
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    read_only: false # nmap needs to write small temp/state files
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7000/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ------------------------------------------------------------ lab targets
+  sqli-lab:
+    build: ./vulnerable-apps/sqli-lab
+    restart: unless-stopped
+    networks: [voidlab_targets]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    ports: ["8081:5000"]
+
+  xss-lab:
+    build: ./vulnerable-apps/xss-lab
+    restart: unless-stopped
+    networks: [voidlab_targets]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    ports: ["8082:5000"]
+
+  cmdi-lab:
+    build: ./vulnerable-apps/cmdi-lab
+    restart: unless-stopped
+    networks: [voidlab_targets]
+    security_opt: [no-new-privileges:true]
+    # NET_RAW is required for the ping binary inside this lab on some hosts;
+    # everything else stays dropped.
+    cap_drop: [ALL]
+    cap_add: [NET_RAW]
+    ports: ["8083:5000"]
+
+  idor-lab:
+    build: ./vulnerable-apps/idor-lab
+    restart: unless-stopped
+    networks: [voidlab_targets]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    ports: ["8084:5000"]
+
+  ssrf-lab:
+    build: ./vulnerable-apps/ssrf-lab
+    restart: unless-stopped
+    networks: [voidlab_targets]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    ports: ["8085:5000"]

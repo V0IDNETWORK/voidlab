@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+  VOIDLAB design tokens.
+  A 4-color semantic system rather than one flat neon accent:
+    brand   (violet)  — primary actions, links, focus states
+    success (cyan)    — captured flags, "easy" difficulty, positive state
+    warning (amber)   — "medium" difficulty, caution
+    danger  (crimson) — "hard"/"insane" difficulty, destructive state
+*/
+@theme {
+  --font-display: "Chakra Petch", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-void-950: #05070c;
+  --color-void-900: #0a0e14;
+  --color-void-800: #12161f;
+  --color-void-700: #1a1f2b;
+  --color-void-600: #2a2f3a;
+  --color-void-400: #8b93a7;
+  --color-void-200: #c4c9d4;
+  --color-void-100: #e7e9ee;
+
+  --color-brand-400: #a48bff;
+  --color-brand-500: #7c5cff;
+  --color-brand-600: #6540e6;
+
+  --color-success-400: #5ff5da;
+  --color-success-500: #29f1c3;
+  --color-success-600: #14c9a0;
+
+  --color-warning-400: #ffc44d;
+  --color-warning-500: #ffb020;
+  --color-warning-600: #e0940a;
+
+  --color-danger-400: #ff6b8a;
+  --color-danger-500: #ff3864;
+  --color-danger-600: #db1e48;
+
+  --animate-scanline: scanline 6s linear infinite;
+  --animate-flicker: flicker 3s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+@keyframes flicker {
+  0%, 92%, 100% { opacity: 1; }
+  93%, 96% { opacity: 0.85; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(124, 92, 255, 0); }
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-void-900);
+  color: var(--color-void-100);
+  font-family: var(--font-body);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 92, 255, 0.15), transparent),
+    linear-gradient(rgba(124, 92, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 92, 255, 0.035) 1px, transparent 1px);
+  background-size: auto, 42px 42px, 42px 42px;
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: var(--color-void-950);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-void-900); }
+::-webkit-scrollbar-thumb { background: var(--color-void-600); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-600); }
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+.terminal-glow {
+  text-shadow: 0 0 12px currentColor;
+}
+
+.glass-panel {
+  background: color-mix(in oklab, var(--color-void-800) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-void-600);
+}
