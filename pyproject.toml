@@ -1,0 +1,167 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel>=0.42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voidremote"
+version = "1.0.0"
+description = "A Python SDK and toolkit for controlling Android devices over ADB (wired and wireless)."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "V0IDNETWORK", email = "ilianothingg@gmail.com" }
+]
+maintainers = [
+    { name = "V0IDNETWORK", email = "ilianothingg@gmail.com" }
+]
+keywords = [
+    "android", "adb", "adb-controller", "sdk", "automation",
+    "testing", "ci", "wireless-debugging", "scrcpy", "mobile-automation",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Hardware",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+requires-python = ">=3.12"
+
+# Core SDK dependencies only — no GUI, no CLI-only deps.
+# This keeps `pip install voidremote` lightweight for library users.
+dependencies = [
+    "pydantic>=2.7,<3.0",
+    "pydantic-settings>=2.3,<3.0",
+    "platformdirs>=4.2,<5.0",
+    "typing-extensions>=4.11; python_version < '3.13'",
+]
+
+[project.optional-dependencies]
+# CLI: adds the `voidremote` command-line tool
+cli = [
+    "click>=8.1.7,<9.0",
+    "rich>=13.7,<14.0",
+]
+# GUI: adds the `voidremote-gui` desktop application
+gui = [
+    "PySide6>=6.7,<6.9",
+]
+# Everything needed to run/build/ship the full application
+full = [
+    "voidremote[cli,gui]",
+]
+# Development toolchain
+dev = [
+    "voidremote[full]",
+    "pytest>=8.2,<9.0",
+    "pytest-asyncio>=0.23,<0.24",
+    "pytest-cov>=5.0,<6.0",
+    "pytest-mock>=3.14,<4.0",
+    "pytest-qt>=4.4,<5.0",
+    "build>=1.2,<2.0",
+    "black>=24.4,<25.0",
+    "ruff>=0.4,<0.5",
+    "mypy>=1.10,<2.0",
+    "types-requests",
+    "pre-commit>=3.7,<4.0",
+]
+docs = [
+    "mkdocs>=1.6,<2.0",
+    "mkdocs-material>=9.5,<10.0",
+    "mkdocstrings[python]>=0.25,<0.26",
+]
+
+[project.urls]
+Homepage = "https://github.com/V0IDNETWORK/VoidRemote"
+Documentation = "https://github.com/V0IDNETWORK/VoidRemote/blob/main/docs/API.md"
+Repository = "https://github.com/V0IDNETWORK/VoidRemote"
+"Bug Tracker" = "https://github.com/V0IDNETWORK/VoidRemote/issues"
+Changelog = "https://github.com/V0IDNETWORK/VoidRemote/blob/main/CHANGELOG.md"
+Author = "https://voidnetwork.ir/"
+
+# CLI is optional — only registered if click/rich are installed (extras=cli).
+# setuptools always declares the entry point; invoking it without the
+# extra installed raises a clear ImportError inside main(), not at install time.
+[project.scripts]
+voidremote = "voidremote.cli.main:main"
+
+[project.gui-scripts]
+voidremote-gui = "voidremote.ui.app:main"
+
+[tool.setuptools]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["voidremote*"]
+exclude = ["tests*", "examples*", "scripts*", "docs*"]
+
+[tool.setuptools.package-data]
+voidremote = ["py.typed", "assets/**/*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312", "py313"]
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["build", "dist", "*.egg-info"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP", "N", "SIM", "TCH"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "ANN"]
+"voidremote/ui/**" = ["N802", "N803"]  # Qt callback naming (e.g. paintEvent)
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+exclude = ["tests/", "build/", "dist/"]
+
+[[tool.mypy.overrides]]
+module = ["PySide6.*", "adb_shell.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "gui: tests that require a Qt platform plugin (run with QT_QPA_PLATFORM=offscreen)",
+    "packaging: tests that build/install the package itself",
+    "slow: tests that take more than a second",
+]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["voidremote"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]

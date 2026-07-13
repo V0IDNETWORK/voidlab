@@ -1,0 +1,7 @@
+# This file is for contributors who want a quick `pip install -r requirements.txt`.
+# Library users should use `pip install voidremote` (see pyproject.toml).
+#
+# Installs the full application: SDK + CLI + GUI + dev toolchain.
+# Equivalent to: pip install -e ".[dev]"
+
+-e .[dev]

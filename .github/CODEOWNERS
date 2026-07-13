@@ -1,0 +1,14 @@
+# VoidRemote Code Owners
+# Each line is a file pattern followed by one or more owners.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owner — all files
+*                           @V0IDNETWORK
+
+# Public SDK surface — changes here need extra scrutiny (semver-sensitive)
+/voidremote/api/            @V0IDNETWORK
+
+# Packaging — anything that could break `pip install voidremote`
+/pyproject.toml             @V0IDNETWORK
+/scripts/                   @V0IDNETWORK
+/.github/workflows/         @V0IDNETWORK

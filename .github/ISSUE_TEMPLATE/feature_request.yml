@@ -1,0 +1,50 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or improvement for VoidRemote
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests for the SDK's public API (`voidremote.api`) are held to
+        a higher bar than CLI/GUI features, since that surface is
+        semantic-versioned — please explain the use case, not just the
+        desired API shape.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - SDK (voidremote.api)
+        - CLI (voidremote command)
+        - GUI (voidremote-gui)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What are you trying to do that VoidRemote doesn't support today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would the API/CLI/UI look like?
+      render: python
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
