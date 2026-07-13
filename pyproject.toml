@@ -51,7 +51,7 @@ dependencies = [
 [project.optional-dependencies]
 # CLI: adds the `voidremote` command-line tool
 cli = [
-    "click>=8.1.7,<9.0",
+    "click>=8.4.2,<9.0",
     "rich>=13.7,<14.0",
 ]
 # GUI: adds the `voidremote-gui` desktop application
