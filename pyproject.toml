@@ -52,7 +52,7 @@ dependencies = [
 # CLI: adds the `voidremote` command-line tool
 cli = [
     "click>=8.1.7,<9.0",
-    "rich>=13.7,<14.0",
+    "rich>=15.0.0,<16.0",
 ]
 # GUI: adds the `voidremote-gui` desktop application
 gui = [
