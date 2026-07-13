@@ -90,7 +90,7 @@ jobs:
         run: |
           pip install dist/*.whl
           python -c "from voidremote import VoidRemote, Device, PairingSession; print('import OK')"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
